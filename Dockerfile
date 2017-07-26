@@ -10,7 +10,7 @@ RUN echo "deb http://download.rethinkdb.com/apt xenial main" | tee /etc/apt/sour
 	apt-get update && \
 	apt-get upgrade -y && \
 	apt-get install -y wget libterm-readline-perl-perl gcc libuv1-dev git \
-						rethinkdb && \
+						rethinkdb sendmail && \
 	apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install ccl

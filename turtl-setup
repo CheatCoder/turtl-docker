@@ -16,10 +16,8 @@ DEFAULT_STORAGE_LIMIT=${DEFAULT_STORAGE_LIMIT:-100}
 STORAGE_INVITE_CREDIT=${STORAGE_INVITE_CREDIT:-25}
 LOCAL_UPLOAD_URL=${LOCAL_UPLOAD_URL:-http://turtl.local}
 LOCAL_UPLOAD_PATH=${LOCAL_UPLOAD_PATH:-"/opt/api/uploads"}
-AWS_S3_TOKEN=${AWS_S3_TOKEN:-(:token ''
-               :secret ''
-               :bucket ''
-               :endpoint 'https://s3.amazonaws.com')}
+AWS_S3_TOKEN=${AWS_S3_TOKEN:-(:token '' :secret '' :bucket '' :endpoint 'https://s3.amazonaws.com')}
+SMTP_HOST=${SMTP_HOST:=localhost}
 
 # generates the config-file
 cat  << __ENDCONFIG__ > /opt/api/config/config.lisp
@@ -35,6 +33,7 @@ cat  << __ENDCONFIG__ > /opt/api/config/config.lisp
 (defvar *enable-hsts-header* nil)
 (defvar *site-url* "${SITE_URL}")
 (defvar *api-path* "")
+(defvar *smtp-host* "${SMTP_HOST}")
 (defvar *admin-email* "${ADMIN_EMAIL}")
 (defvar *email-from* "${EMAIL_FROM}")
 (defvar *email-user* "${SMTP_USER}")
