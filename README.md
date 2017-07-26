@@ -12,7 +12,7 @@ sudo docker build -t turtl_docker .
 ## How to run ?
 
 ```
-sudo docker run -d -p 8181:8181 -v $(pwd)/volume:/var/lib/rethinkdb/instance1 -t turtl_docker
+sudo docker run -d -p 8181:8181 -p 8182:25 -v $(pwd)/volume:/var/lib/rethinkdb/instance1 -t turtl_docker
 ```
 ## Configuration
 
@@ -24,6 +24,7 @@ The image supports the following environment variables that will be injected in 
 - PROD_ERR_HANDLING: defaults to 't'
 - FQDN: defaults to 'turtl.local'
 - SITE_URL: defaults to 'http://turtl.local'
+- SMTP_HOST: default to 'localhost'
 - ADMIN_EMAIL: defaults to 'root@example.com'
 - EMAIL_FROM: defaults to 'noreply@example.com'
 - SMTP_USER: defaults to empty
@@ -43,7 +44,7 @@ The image supports the following environment variables that will be injected in 
 First, listen only on localhost :
 
 ```
-sudo docker run -d --name turtl -p 127.0.0.1:8181:8181 -v $(pwd)/volume:/var/lib/rethinkdb/instance1 -t turtl_docker
+sudo docker run -d --name turtl -p 127.0.0.1:8181:8181 -p 8182:25 -v $(pwd)/volume:/var/lib/rethinkdb/instance1 -t turtl_docker
 ```
 
 Secondly add your reverse proxy in Apache conf :
