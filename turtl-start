@@ -1,1 +1,1 @@
-/etc/init.d/rethinkdb restart && /etc/init.d/sendmail restart && cd /opt/api && /opt/ccl/lx86cl64 -l /root/quicklisp/setup.lisp -l launch.lisp
+/etc/init.d/nginx restart && /etc/init.d/rethinkdb restart && /etc/init.d/sendmail restart && cd /opt/api && /opt/ccl/lx86cl64 -l /root/quicklisp/setup.lisp -l launch.lisp

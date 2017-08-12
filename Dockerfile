@@ -4,14 +4,37 @@ ENV CCL_VERSION 1.11
 ENV DEBIAN_FRONTEND noninteractive
 
 ADD https://download.rethinkdb.com/apt/pubkey.gpg /tmp/rethinkdb-pubkey.gpg
+ADD https://nginx.org/keys/nginx_signing.key /tmp/nginx.key
+
 
 RUN echo "deb http://download.rethinkdb.com/apt xenial main" | tee /etc/apt/sources.list.d/rethinkdb.list && \
+	echo "deb http://nginx.org/packages/mainline/ubuntu/ xenial nginx" | tee /etc/apt/sources.list.d/nginx && \
+	apt-key add - < /tmp/nginx.key && \
 	apt-key add - < /tmp/rethinkdb-pubkey.gpg && \
 	apt-get update && \
 	apt-get upgrade -y && \
-	apt-get install -y wget libterm-readline-perl-perl gcc libuv1-dev git \
-						rethinkdb sendmail && \
+	apt-get install -y curl wget libterm-readline-perl-perl gcc libuv1-dev git \
+				rethinkdb sendmail nginx && \
+	curl -sL https://deb.nodesource.com/setup_8.x | bash - && \
+	apt-get install -y nodejs build-essential && \
 	apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# nginx for turtl web
+
+ADD turtl.nginx.conf /etc/nginx/sites-aviable/turtl.conf
+RUN ln -s /etc/nginx/sites-aviable/turtl.conf /etc/nginx/sites-enabled/turtl.conf && \
+	rm /etc/nginx/sites-enabled/default && \
+	mkdir /turtlweb && \
+	mkdir /etc/nginx/external
+
+# turtl web
+
+RUN    cd /turtlweb && \
+	git clone https://github.com/turtl/js && \
+	cd js && \
+	cat config/config.js.default | sed "s/http:\/\/turtl.dev:8181/\/api/" > config/config.js && \
+	npm install && \
+	make
 
 # Install ccl
 RUN wget -P /opt/ ftp://ftp.clozure.com/pub/release/${CCL_VERSION}/ccl-${CCL_VERSION}-linuxx86.tar.gz && \
@@ -40,7 +63,12 @@ COPY launch.lisp /opt/api/
 COPY rethinkdb.conf /etc/rethinkdb/instances.d/instance1.conf
 
 # general settings
-EXPOSE 8181
+EXPOSE 443
 WORKDIR /opt/api
-VOLUME /var/lib/rethinkdb/instance1
+#VOLUME /var/lib/rethinkdb/instance1
 CMD /opt/turtl-setup
+
+# clean
+RUN apt-get purge -y build-essential curl wget && \
+	apt-get clean && rm -rf /var/lib/apt/lists/*
+
