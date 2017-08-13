@@ -13,23 +13,28 @@ RUN echo "deb http://download.rethinkdb.com/apt xenial main" | tee /etc/apt/sour
 	apt-key add - < /tmp/rethinkdb-pubkey.gpg && \
 	apt-get update && \
 	apt-get upgrade -y && \
-	apt-get install -y curl wget libterm-readline-perl-perl gcc libuv1-dev git \
-				rethinkdb sendmail nginx && \
+	apt-get install -y curl wget \
+				libterm-readline-perl-perl \
+				gcc \
+				libuv1-dev \
+				git \
+				rethinkdb \
+				sendmail \
+				nginx && \
 	curl -sL https://deb.nodesource.com/setup_8.x | bash - && \
-	apt-get install -y nodejs build-essential && \
-	apt-get clean && rm -rf /var/lib/apt/lists/*
+	apt-get install -y nodejs build-essential
 
 # nginx for turtl web
 
 ADD turtl.nginx.conf /etc/nginx/sites-aviable/turtl.conf
 RUN ln -s /etc/nginx/sites-aviable/turtl.conf /etc/nginx/sites-enabled/turtl.conf && \
 	rm /etc/nginx/sites-enabled/default && \
-	mkdir /turtlweb && \
+	mkdir /opt/turtl && \
 	mkdir /etc/nginx/external
 
 # turtl web
 
-RUN    cd /turtlweb && \
+RUN    cd /opt/turtl && \
 	git clone https://github.com/turtl/js && \
 	cd js && \
 	cat config/config.js.default | sed "s/http:\/\/turtl.dev:8181/\/api/" > config/config.js && \
@@ -66,6 +71,7 @@ COPY rethinkdb.conf /etc/rethinkdb/instances.d/instance1.conf
 EXPOSE 443
 WORKDIR /opt/api
 #VOLUME /var/lib/rethinkdb/instance1
+#VOLUME /opt/api/uploads
 CMD /opt/turtl-setup
 
 # clean
