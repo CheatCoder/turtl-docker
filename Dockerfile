@@ -68,10 +68,10 @@ COPY launch.lisp /opt/api/
 COPY rethinkdb.conf /etc/rethinkdb/instances.d/instance1.conf
 
 # general settings
-EXPOSE 443
+EXPOSE 80
 WORKDIR /opt/api
-#VOLUME /var/lib/rethinkdb/instance1
-#VOLUME /opt/api/uploads
+VOLUME /var/lib/rethinkdb/instance1
+VOLUME /opt/api/uploads
 CMD /opt/turtl-setup
 
 # clean
